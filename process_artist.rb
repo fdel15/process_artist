@@ -3,11 +3,15 @@ require 'ruby-processing'
 class ProcessArtist < Processing::App
 
   def setup
-    background(0, 0, 0)
+    background(255, 255, 255)
+    fill(125,0,125)
+    stroke(125,0, 125)
   end
 
   def draw
-    # Do Stuff
+   ellipse_mode CENTER
+   rect_mode CENTER
+   smooth
   end
 
   def run_command(command)
@@ -36,6 +40,27 @@ class ProcessArtist < Processing::App
       run_command(@queue)
       @queue = ""
     end
+  end
+
+  def mouse_pressed
+    color1 = rand(255)
+    color2 = rand(255)
+    color3 = rand(255)
+    stroke(color1, color2, color3)
+    fill(color1, color2, color3)
+  end
+
+  def mouse_dragged
+    if @coords.nil?
+      @coords = []
+    end
+    @coords << mouse_x
+    @coords << mouse_y
+  end
+
+  def mouse_released
+    @coords.each_slice(2){|x,y| ellipse x, y, 15, 15}
+    @coords = nil
   end
 
 end
