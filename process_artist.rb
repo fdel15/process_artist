@@ -4,8 +4,8 @@ class ProcessArtist < Processing::App
 
   def setup
     background(255, 255, 255)
-    fill(125,0,125)
-    stroke(125,0, 125)
+    @fill = fill(125,0,125)
+    @stroke = stroke(125,0, 125)
   end
 
   def draw
@@ -15,10 +15,25 @@ class ProcessArtist < Processing::App
   end
 
   def run_command(command)
-    if command[0] == 'b'
-      set_background_color(command[1..-1])
+    puts "Running Command #{command}"
+
+    command_as_array = command.split(",")
+    command_key = command_as_array.first[0]
+        case command_key
+        when 'b' then set_background_color(command[1..-1])
+        when 'c' then background(255,255,255)
+        when 'e' then erase
+        else warn 'Sorry invalid command'
+        end
+  end
+
+  def erase
+    if @eraser.nil?
+      @eraser = 1
+      warn "Eraser equipped! Type e then enter to remove eraser"
     else
-      warn "Sorry I do not recognize that command. Please try again"
+      @eraser = nil
+      warn "Eraser removed!"
     end
   end
 
@@ -43,11 +58,16 @@ class ProcessArtist < Processing::App
   end
 
   def mouse_pressed
-    color1 = rand(255)
-    color2 = rand(255)
-    color3 = rand(255)
-    stroke(color1, color2, color3)
-    fill(color1, color2, color3)
+    if @eraser.nil?
+      color1 = rand(255)
+      color2 = rand(255)
+      color3 = rand(255)
+      stroke(color1, color2, color3)
+      fill(color1, color2, color3)
+    else
+      stroke(255,255,255)
+      fill(255,255,255)
+    end
   end
 
   def mouse_dragged
@@ -56,6 +76,7 @@ class ProcessArtist < Processing::App
     end
     @coords << mouse_x
     @coords << mouse_y
+    ellipse mouse_x, mouse_y, 15, 15
   end
 
   def mouse_released
